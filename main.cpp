@@ -11,7 +11,7 @@
 #include "other.hpp"
 #include "game.hpp"
 #include "timer.hpp"
-Uint32 generator_timeout = 500; 
+Uint32 generator_timeout = 365; 
 Uint32 cubi_update_timeout = 2;
 
 Timer generator_timer;

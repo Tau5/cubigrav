@@ -1,21 +1,21 @@
 #!/bin/sh
 echo "Cleaning data..."
 rm data/highscores
-echo "Installing CubiColor..."
-mkdir -p $HOME/.cubigames/cubicolor
-app=$HOME/.cubigames/cubicolor
+echo "Installing Cubigrav..."
+mkdir -p $HOME/.cubigames/cubigrav
+app=$HOME/.cubigames/cubigrav
 echo "Copying files..."
 cp -r data/* $app/
-cp cubicolor.desktop $app/
+cp cubigrav.desktop $app/
 echo "Patching play.sh ..."
 echo "#!/bin/sh\napp=$app$(cat $app/play.sh)" > $app/play.sh
-echo "Patching cubicolor.desktop"
-echo "$(cat $app/cubicolor.desktop)\nicon=$app/cubicolor.png" > $app/cubicolor.desktop
+echo "Patching cubigrav.desktop"
+echo "$(cat $app/cubigrav.desktop)\nicon=$app/cubigrav.png" > $app/cubigrav.desktop
 echo "Adding command..."
-sudo unlink /usr/local/bin/cubicolor 
-sudo ln -s $app/play.sh /usr/local/bin/cubicolor 
+sudo unlink /usr/local/bin/cubigrav 
+sudo ln -s $app/play.sh /usr/local/bin/cubigrav 
 echo "Creating desktop shortcut..."
 #Find desktop dir
 desktop=$(xdg-user-dir DESKTOP)
-cp $app/cubicolor.desktop $desktop/
-echo "CubiColor installed!"
+cp $app/cubigrav.desktop $desktop/
+echo "cubigrav installed!"

@@ -12,7 +12,7 @@ all : $(OBJS)
 dist : all
 	mkdir -p build
 	cp -r installer build
-	cp cubicolor build/installer/data/cubigrav
+	cp cubigrav build/installer/data/cubigrav
 	
 	cd build/installer; tar -cvzf ../cubigrav.tar.gz .
 
