@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=CubiColor
+Comment=A game about cubis and colors
+Exec=cubicolor
+Terminal=false
