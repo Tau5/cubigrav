@@ -90,6 +90,8 @@ int main(int argc, char *args[]) {
                 if(keyboard[SDL_SCANCODE_H]) {
                   mode = "help";
                 } else {
+                  cubi_update_timer.reset_timer(cubi_update_timeout);
+                  generator_timer.reset_timer(generator_timeout);
                   mode = "game";
                 }
                 
