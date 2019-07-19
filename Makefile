@@ -24,4 +24,4 @@ win:
 	cp SDL2-$(SDL_VERSION)/$(MINGW)/bin/*.dll windows/
 	cp SDL2_ttf-$(SDLTTF_VERSION)/$(MINGW)/bin/*.dll windows/
 	cp PixelOperator-Bold.ttf windows/
-	cp cubicolor.exe windows/
+	cp cubigrav.exe windows/
