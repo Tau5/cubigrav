@@ -78,7 +78,7 @@ bool check_cubis() {
 	}
 	for(auto it = cubis.begin(); it != cubis.end(); ++it) {
 		auto i = std::distance(cubis.begin(), it); 
-		if(cubis[i].get_rect().x > SCREEN_WIDTH/3 && cubis[i].get_rect().x < SCREEN_WIDTH/3+SCREEN_WIDTH/10) {
+		if(cubis[i].get_rect().x+SCREEN_WIDTH/10 > SCREEN_WIDTH/3 && cubis[i].get_rect().x+SCREEN_WIDTH/10 < SCREEN_WIDTH/3+SCREEN_WIDTH/10) {
 			if (cubis_state[i] == player_state) {
 				end = true;
 			}
