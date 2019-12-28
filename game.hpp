@@ -18,6 +18,8 @@ SDL_Rect rect_ceiling = {x: 0, y: SCREEN_HEIGHT-SCREEN_HEIGHT/5,
 						};
 int roof_start = SCREEN_HEIGHT/5;
 int ceiling_start = SCREEN_HEIGHT-SCREEN_HEIGHT/5;
+int PLAYER_POSX = SCREEN_WIDTH/3;
+int ENEMY_WIDTH = SCREEN_WIDTH/10;
 int player_state = false;
 std::vector<Cuby> cubis;
 std::vector<bool> cubis_state;
@@ -26,7 +28,7 @@ Cuby player;
 void mode_game_init() {
 	player.set_sdl_color(player_color);
 	player.set_size(SCREEN_WIDTH/10, SCREEN_HEIGHT/5);
-	player.set_positon(SCREEN_WIDTH/3, ceiling_start-SCREEN_HEIGHT/5);
+	player.set_positon(PLAYER_POSX, ceiling_start-SCREEN_HEIGHT/5);
 	
 }
 
@@ -47,7 +49,7 @@ void make_random_cubi() {
 	std::uniform_int_distribution<> random_cubi_height((SCREEN_HEIGHT-SCREEN_HEIGHT/5*2)/4, (SCREEN_HEIGHT-SCREEN_HEIGHT/5*2)/2); // define the range
     cubis_state.push_back(random_cubi_state(eng));
 	Cuby tempcubi;
-	tempcubi.set_size(SCREEN_WIDTH/10, random_cubi_height(eng));
+	tempcubi.set_size(ENEMY_WIDTH, random_cubi_height(eng));
 	tempcubi.set_sdl_color(cubis_color);
 	if (cubis_state[cubis_state.size()-1]) {
 		tempcubi.set_positon(SCREEN_WIDTH, roof_start);
@@ -78,7 +80,8 @@ bool check_cubis() {
 	}
 	for(auto it = cubis.begin(); it != cubis.end(); ++it) {
 		auto i = std::distance(cubis.begin(), it); 
-		if(cubis[i].get_rect().x+SCREEN_WIDTH/10 > SCREEN_WIDTH/3 && cubis[i].get_rect().x+SCREEN_WIDTH/10 < SCREEN_WIDTH/3+SCREEN_WIDTH/10) {
+		auto target = &cubis[i];
+		if(target->get_rect().x-ENEMY_WIDTH < PLAYER_POSX && target->get_rect().x > PLAYER_POSX-ENEMY_WIDTH) {
 			if (cubis_state[i] == player_state) {
 				end = true;
 			}
