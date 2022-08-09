@@ -11,13 +11,16 @@
 #include "other.hpp"
 #include "game.hpp"
 #include "timer.hpp"
-Uint32 generator_timeout = 365; 
-Uint32 cubi_update_timeout = 2;
-
+Uint32 generator_timeout = 365*2; 
+float cubi_update_timeout = 0;
+Uint32 animation_timeout = 60;
 Timer generator_timer;
 Timer cubi_update_timer;
-int points = 0;
+Timer animation_timer;
+
 int lastPoints = 0;
+int madness = 1;
+int points = 0;
 string mode = "title";
 SDL_Window *gwindow = NULL;
 SDL_Surface *gScreenSurface = NULL;
@@ -36,24 +39,57 @@ enum cubi_types {
 };
 int cubis_type[5];
 
-SDL_Rect pointsRect = {
-  x: 0,
-  y: 0,
-  w: SCREEN_WIDTH/8,
-  h: SCREEN_HEIGHT/3
+SDL_Rect pointsRect, hsRect, timer_rect, rect_roof, rect_ceiling, rect_points;
+SDL_Color madness_colors[] = {
+  {124, 250, 72, 255},
+  {114, 159, 207, 255},
+  {252, 233, 79, 255},
+  {252, 175, 62, 255},
+  {239, 41, 41, 255},
+  {166, 61, 183, 255},
+  {136, 138, 133, 255},
+  {0, 0, 0, 255}
 };
-SDL_Rect hsRect = {
-  x: SCREEN_WIDTH-SCREEN_WIDTH/3,
-  y: 0,
-  w: SCREEN_WIDTH/4,
-  h: SCREEN_HEIGHT/4
-};
-SDL_Rect timer_rect {
-  x: 0,
-  y: SCREEN_HEIGHT- SCREEN_HEIGHT/4,
-  w: SCREEN_WIDTH,
-  h: SCREEN_HEIGHT/4
-};
+
+void update_rects() {
+  pointsRect = {
+    x: 0,
+    y: 0,
+    w: SCREEN_WIDTH/8,
+    h: SCREEN_HEIGHT/3
+  };
+  hsRect = {
+    x: SCREEN_WIDTH-SCREEN_WIDTH/3,
+    y: 0,
+    w: SCREEN_WIDTH/4,
+    h: SCREEN_HEIGHT/4
+  };
+  timer_rect = {
+    x: 0,
+    y: SCREEN_HEIGHT- SCREEN_HEIGHT/4,
+    w: SCREEN_WIDTH,
+    h: SCREEN_HEIGHT/4
+  };
+  rect_roof = {x: 0, y: 0,
+							w: SCREEN_WIDTH,
+							h: SCREEN_HEIGHT/5
+						};
+  rect_points = {x: 0, y: 0,
+                w: SCREEN_WIDTH/5,
+                h: SCREEN_HEIGHT/5
+              };
+  rect_ceiling = {x: 0, y: SCREEN_HEIGHT-SCREEN_HEIGHT/5,
+                w: SCREEN_WIDTH,
+                h: SCREEN_HEIGHT/5
+              };
+  roof_start = SCREEN_HEIGHT/5;
+  ceiling_start = SCREEN_HEIGHT-SCREEN_HEIGHT/5;
+  PLAYER_POSX = SCREEN_WIDTH/3;
+  ENEMY_WIDTH = SCREEN_WIDTH/10;
+  player.set_size(SCREEN_WIDTH/10, SCREEN_HEIGHT/5);
+  update_player_pos();
+}
+
 SDL_Color timer_color = {0xB8, 0x9A, 0xFE}; //B89AFE
 bool newhs = false;
 int current_cubi = 0;
@@ -63,61 +99,11 @@ bool loadMedia();
 void close();
 void render();
 void restart();
-int main(int argc, char *args[]) {
-  if (init()) {
-    if (loadMedia()) {
-      while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-          if (e.type == SDL_QUIT) {
-            quit = true;
-          }
-            const Uint8* keyboard = SDL_GetKeyboardState(NULL);
-            if (e.type == SDL_KEYDOWN) {
-            if (mode == "game") {
-            
-              if (keyboard[SDL_SCANCODE_UP]) {
-                if (!player_state) {
-                  player_change_state();
-                }
-              } else if (keyboard[SDL_SCANCODE_DOWN]){
-                if (player_state) {
-                  player_change_state();
-                }
-              }
-            }
+SDL_DisplayMode dm;
+int GLOBAL_SCREEN_WIDTH = 1;
+int GLOBAL_SCREEN_HEIGHT = 1;
 
-            if (mode == "title") {
-                if(keyboard[SDL_SCANCODE_H]) {
-                  mode = "help";
-                } else {
-                  cubi_update_timer.reset_timer(cubi_update_timeout);
-                  generator_timer.reset_timer(generator_timeout);
-                  mode = "game";
-                }
-                
-              }
-              if (mode == "help") {
-                if(keyboard[SDL_SCANCODE_RETURN]) {
-                  mode = "title";
-                }
-              }
-              if (mode == "over" && keyboard[SDL_SCANCODE_SPACE]) mode = "title";
-              
-              
-            } 
-            
-          }
-          
-        
-        render();
-        if (mode == "game") {
-        }
-      }
-    }
-  }
-  close();
-  return 0;
-}
+
 bool init() {
   //Initialize SDL
   bool success = true;
@@ -152,15 +138,62 @@ bool loadMedia() {
   return success;
 }
 
+void update_screen_size() {
+  update_rects();
+  SDL_SetWindowSize(gwindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+  if (madness < 2) SDL_SetWindowPosition(gwindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+}
 
+void reset_screen_size() {
+  SCREEN_HEIGHT = INITIAL_SCREEN_HEIGHT; 
+  SCREEN_WIDTH = INITIAL_SCREEN_WIDTH;
+  update_screen_size();
+}
+void set_difficulty_highway() {
+  generator_timeout = 1200;
 
+}
+
+int difficulty_timeout = 0;
+int madness2_offset = 25;
+void adjust_difficulty() {
+    if (points%50 >= 40 && points > 0) {
+      if (points%50 == 40 && madness > 2) {
+          SCREEN_HEIGHT = 100;
+          SCREEN_WIDTH = 800;
+          update_screen_size();
+      } else {
+          if (madness > 1) {
+            SCREEN_HEIGHT = (200 - (points - madness2_offset) > 100 ? 200 - (points - madness2_offset) : 100);
+            SCREEN_WIDTH = ((points - madness2_offset) + INITIAL_SCREEN_WIDTH < 1000 ? (points - madness2_offset) + INITIAL_SCREEN_WIDTH : 1000);
+            update_screen_size();
+          }   
+      }
+      set_difficulty_highway();
+    } else {
+      if (madness > 1) {
+        SCREEN_HEIGHT = (200 - (points - madness2_offset) > 100 ? 200 - (points - madness2_offset) : 100);
+        SCREEN_WIDTH = ((points - madness2_offset) + INITIAL_SCREEN_WIDTH < 1000 ? (points - madness2_offset) + INITIAL_SCREEN_WIDTH : 1000);
+      }
+      update_screen_size();
+      generator_timeout = ( 500 - points*2 > 200 ? 500 - points*2 : 200 );
+    }
+    if (points%25 == 0 && points > 0) {
+      madness++;
+      SDL_Log("madness %i", madness);
+    }
+    if (madness <= 8) {
+      cubis_color = madness_colors[madness-1];
+    }
+    cubi_update_timeout = 1;
+}
 
 void render() {
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
   SDL_RenderClear(gRenderer);
   if (mode == "game") {
       player.render(gRenderer);
-      SDL_SetRenderDrawColor(gRenderer, 0xFF, 0, 0, 0xFF);
+      SDL_SetRenderDrawColor(gRenderer, cubis_color.r, cubis_color.g, cubis_color.b, 0xFF);
       const SDL_Rect rect_array[2] = {rect_ceiling, rect_roof};
       SDL_RenderFillRects(gRenderer, rect_array, 2);
       for(int i=0; i < cubis.size(); i++) {
@@ -178,9 +211,13 @@ void render() {
           restart();
         }
       }
+      if (animation_timer.get_timer_status()) {
+        animation_timer.reset_timer(animation_timeout);
+      }
       if (generator_timer.get_timer_status()) {
-        generator_timer.reset_timer(generator_timeout);
         points++;
+        adjust_difficulty();
+        generator_timer.reset_timer(generator_timeout);
         make_random_cubi();
       }
       render_text(gRenderer, font, to_string(points), points_color, rect_points);
@@ -249,13 +286,89 @@ void close() {
 }
 
 void restart() {
+  reset_screen_size();
   current_cubi = -1;
   newhs = update_highscore(points);
   hs_text = "High score: " + to_string(get_highscore());
   lastPoints = points;
   points = 0;
+  madness = 1;
   mode = "over";
   cubis.clear();
   cubis_state.clear();
   render();
+}
+
+int main(int argc, char *args[]) {
+  update_rects();
+  if (init()) {
+    if (loadMedia()) {
+      if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
+      {
+          SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+          return 1;
+      }
+      GLOBAL_SCREEN_WIDTH = dm.w;
+      GLOBAL_SCREEN_HEIGHT = dm.h;
+      while (!quit) {
+        while (SDL_PollEvent(&e) != 0) {
+          if (e.type == SDL_QUIT) {
+            quit = true;
+          }
+            const Uint8* keyboard = SDL_GetKeyboardState(NULL);
+            if (e.type == SDL_KEYDOWN) {
+            if (mode == "game") {
+              int separation = (7 - madness > 1? 7 - madness : 1);
+              if (keyboard[SDL_SCANCODE_UP]) {
+                if (!player_state) {
+                  if (madness > 3 && madness < 8) SDL_SetWindowPosition(gwindow, GLOBAL_SCREEN_WIDTH/2-SCREEN_WIDTH/2, 
+                                      GLOBAL_SCREEN_HEIGHT/2-(SCREEN_HEIGHT/2)-(SCREEN_HEIGHT/separation));
+                  if (madness >= 8) SDL_SetWindowPosition(gwindow, GLOBAL_SCREEN_WIDTH/2-SCREEN_WIDTH/2, 
+                                      0);
+                  player_change_state();
+                }
+              } else if (keyboard[SDL_SCANCODE_DOWN]){
+                if (player_state) {
+                  if (madness > 3 && madness < 8) SDL_SetWindowPosition(gwindow, GLOBAL_SCREEN_WIDTH/2-SCREEN_WIDTH/2, 
+                                      GLOBAL_SCREEN_HEIGHT/2-(SCREEN_HEIGHT/2)+(SCREEN_HEIGHT/separation));
+                  if (madness >= 8) SDL_SetWindowPosition(gwindow, GLOBAL_SCREEN_WIDTH/2-SCREEN_WIDTH/2, 
+                                      GLOBAL_SCREEN_HEIGHT-SCREEN_HEIGHT);
+                  player_change_state();
+                }
+              }
+            }
+
+            if (mode == "title") {
+                if(keyboard[SDL_SCANCODE_H]) {
+                  mode = "help";
+                } else {
+                  adjust_difficulty();
+                  cubi_update_timer.reset_timer(cubi_update_timeout);
+                  generator_timer.reset_timer(generator_timeout);
+                  animation_timer.reset_timer(animation_timeout);
+                  mode = "game";
+                }
+                
+              }
+              if (mode == "help") {
+                if(keyboard[SDL_SCANCODE_RETURN]) {
+                  mode = "title";
+                }
+              }
+              if (mode == "over" && keyboard[SDL_SCANCODE_SPACE]) mode = "title";
+              
+              
+            } 
+            
+          }
+          
+        
+        render();
+        if (mode == "game") {
+        }
+      }
+    }
+  }
+  close();
+  return 0;
 }
