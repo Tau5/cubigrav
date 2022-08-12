@@ -39,11 +39,11 @@ void player_change_state() {
 }
 
 void make_random_cubi() {
-    std::random_device rd; // obtain a random number from hardware
-    static std::mt19937 eng(rd()); // seed the generator
-    std::uniform_int_distribution<> random_cubi_state(false, true); // define the range
+	std::random_device rd; // obtain a random number from hardware
+	static std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> random_cubi_state(false, true); // define the range
 	std::uniform_int_distribution<> random_cubi_height((SCREEN_HEIGHT-SCREEN_HEIGHT/5*2)/4, (SCREEN_HEIGHT-SCREEN_HEIGHT/5*2)/2); // define the range
-    cubis_state.push_back(random_cubi_state(eng));
+	cubis_state.push_back(random_cubi_state(eng));
 	Cuby tempcubi;
 	tempcubi.set_size(ENEMY_WIDTH, random_cubi_height(eng));
 	tempcubi.set_sdl_color(cubis_color);
@@ -78,7 +78,7 @@ bool check_cubis() {
 	for(auto it = cubis.begin(); it != cubis.end(); ++it) {
 		auto i = std::distance(cubis.begin(), it); 
 		auto target = &cubis[i];
-		if(target->get_rect().x-ENEMY_WIDTH < PLAYER_POSX-30 && target->get_rect().x-30 > PLAYER_POSX-ENEMY_WIDTH) {
+		if(target->get_rect().x-ENEMY_WIDTH < PLAYER_POSX-15 && target->get_rect().x-15 > PLAYER_POSX-ENEMY_WIDTH) {
 			if (cubis_state[i] == player_state) {
 				end = true;
 			}

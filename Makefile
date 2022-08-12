@@ -9,6 +9,8 @@ MINGW= x86_64-w64-mingw32
 all : $(OBJS) 
 	$(CC) $(OBJS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 
+debug : $(OBJS) 
+	$(CC) $(OBJS) -g $(LINKER_FLAGS) -o $(OBJ_NAME) 
 dist : all
 	mkdir -p build
 	cp -r installer build
