@@ -18,7 +18,7 @@ dist : all
 	cd build/installer; tar -cvzf ../cubigrav.tar.gz .
 
 clean:
-	rm -rf cubigrav cubigrav.exe highscores build windows .kdev4 cubigrav.kdev4 installer
+	rm -rf cubigrav cubigrav.exe highscores build windows
 
 
 win:
