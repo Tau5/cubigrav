@@ -2,7 +2,7 @@ OBJS = main.cpp
 CC = g++
 #SDL_VERSION=2.0.9
 #SDLTTF_VERSION=2.0.15
-COMPILER_FLAGS = -O2
+COMPILER_FLAGS = -O2 -Wall
 LINKER_FLAGS = -I/usr/include/SDL2 -lSDL2 -lSDL2_ttf
 OBJ_NAME = cubigrav
 MINGW= x86_64-w64-mingw32
@@ -16,6 +16,9 @@ dist : all
 	cp -r installer build
 	cp cubigrav build/installer/data/cubigrav
 	cd build/installer; tar -cvzf ../cubigrav.tar.gz .
+
+clean:
+	rm -rf cubigrav cubigrav.exe highscores build windows .kdev4 cubigrav.kdev4 installer
 
 
 win:
