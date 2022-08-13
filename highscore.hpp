@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string>
 #include "global.hpp"
-int key = HELP.size() + 30;
+int key = HELP_STR.size() + 30;
 
 std::string enc(std::string inpString) 
 { 
