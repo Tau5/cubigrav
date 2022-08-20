@@ -2,6 +2,8 @@
 Type=Application
 Encoding=UTF-8
 Name=CubiGrav
-Comment=A game about cubis and colors
-Exec=cubigrav
+Icon=cubigrav
 Terminal=false
+Comment=A game about cubis and colors
+Exec=/usr/bin/cubigrav
+Categories=Game;

@@ -174,45 +174,15 @@ int madness2_offset = 25;
 
 
 
-void adjust_difficulty()
-{
-  if (points % 50 >= 40 && points > 0)
-  {
-    if (points % 50 == 40)
-    {
-      cubis.clear();
-      cubis_state.clear();
-      generator_timer.reset_timer(generator_timeout);
-    }
-    if (points % 50 >= 40 && madness > 2)
-    {
-      SCREEN_HEIGHT = 100;
-      SCREEN_WIDTH = 800;
-      update_screen_size();
-    }
-    else
-    {
-      if (madness > 1)
-      {
-        SCREEN_HEIGHT = (200 - (points - madness2_offset) > 100 ? 200 - (points - madness2_offset) : 100);
-        SCREEN_WIDTH = ((points - madness2_offset) + INITIAL_SCREEN_WIDTH < 1000 ? (points - madness2_offset) + INITIAL_SCREEN_WIDTH : 1000);
-        update_screen_size();
-      }
-    }
-    set_difficulty_highway();
+void adjust_difficulty() {
+  if (madness > 1) {
+    SCREEN_HEIGHT = (200 - (points - madness2_offset) > 100 ? 200 - (points - madness2_offset) : 100);
+    SCREEN_WIDTH = ((points - madness2_offset) + INITIAL_SCREEN_WIDTH < GLOBAL_SCREEN_WIDTH ? (points - madness2_offset) + INITIAL_SCREEN_WIDTH : GLOBAL_SCREEN_WIDTH);
   }
-  else
-  {
-    if (madness > 1)
-    {
-      SCREEN_HEIGHT = (200 - (points - madness2_offset) > 100 ? 200 - (points - madness2_offset) : 100);
-      SCREEN_WIDTH = ((points - madness2_offset) + INITIAL_SCREEN_WIDTH < GLOBAL_SCREEN_WIDTH ? (points - madness2_offset) + INITIAL_SCREEN_WIDTH : GLOBAL_SCREEN_WIDTH);
-    }
-    update_screen_size();
-    cubi_speed = powf(points+5, (1/(float)2)) < 18 ? powf(points+5, (1/(float)2)) : 18;
-    //if (cubi_speed < 0.1) cubi_speed = 0.1;
-    generator_timeout = (300 - (int)std::round(powf(points*50, (0.5))))/cubi_speed;//(200 - points > 100 ? 200 - points : 100);
-  }
+  update_screen_size();
+  cubi_speed = powf(points+50, (1/(float)2)) < 18 ? powf(points+50, (1/(float)2)) : 18;
+  generator_timeout = (300 - (int)std::round(powf((points+50)*50, (0.5))))/cubi_speed;//(200 - points > 100 ? 200 - points : 100);
+  if (generator_timeout < 150/cubi_speed) generator_timeout = 150/cubi_speed;
   if (points % 25 == 0 && points > 0)
   {
     madness++;

@@ -22,16 +22,16 @@ std::string enc(std::string inpString)
 	 return inpString;
 } 
 
-bool update_highscore(int points) {
+bool update_highscore(int points, std::string hipath = "./highscores") {
    std::ofstream filew;
    std::ifstream filer;
    int hspoints;
    bool newfile = false;
 	
-   filer.open("./highscores", std::ios::out);
+   filer.open(hipath, std::ios::out);
 	bool hs = false; //This variable represents if the given points results in a new highscore or not
 	   if (!filer.is_open()) {
-		filew.open("./highscores");
+		filew.open(hipath);
 		filew << enc("0");
 		hspoints = 0;
 		newfile = true;
@@ -51,7 +51,7 @@ bool update_highscore(int points) {
 	   if (hspoints > points) {
 		   hs = false;
 	   } else {
-		   filew.open("./highscores");
+		   filew.open(hipath);
 		   std::string newpoints = std::to_string(points);
 		   filew << enc(newpoints);
 		   filew.close();
@@ -63,14 +63,14 @@ bool update_highscore(int points) {
 
 }
 
-int get_highscore() {
+int get_highscore(std::string hipath = "./highscores") {
 	std::ofstream filew;
 	std::ifstream filer;
 	int hspoints;
 	bool newfile = false;
-	filer.open("./highscores", std::ios::out);
+	filer.open(hipath, std::ios::out);
 	   if (!filer.is_open()) {
-		filew.open("./highscores");
+		filew.open(hipath);
 		filew << enc("0");
 		hspoints = 0;
 		newfile = true;

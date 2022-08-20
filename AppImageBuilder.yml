@@ -1,0 +1,133 @@
+# appimage-builder recipe see https://appimage-builder.readthedocs.io for details
+version: 1
+script: |
+  # remove any existent binaries
+  rm -rf AppDir | true
+
+  # compile and install binaries into AppDir
+  make
+  make install DESTDIR=AppDir
+AppDir:
+  path: /home/tau/build/cubigrav/AppDir
+  app_info:
+    id: cubigrav
+    name: CubiGrav
+    icon: cubigrav
+    version: latest
+    exec: usr/share/cubigrav/cubigrav
+    exec_args: $HOME/.cubigrav $@
+  apt:
+    arch:
+    - amd64
+    allow_unauthenticated: true
+    sources:
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy main restricted
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy-updates main restricted
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy universe
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy-updates universe
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy multiverse
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy-updates multiverse
+    - sourceline: deb http://es.archive.ubuntu.com/ubuntu/ jammy-backports main restricted
+        universe multiverse
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security main restricted
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security universe
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security multiverse
+    - sourceline: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable
+        main
+    - sourceline: deb https://ppa.launchpadcontent.net/mozillateam/ppa/ubuntu/ jammy
+        main
+    include:
+    - libcap2:amd64
+    - libgpg-error0:amd64
+    - liblzma5:amd64
+    - libpcre3:amd64
+    - libpulse0:amd64
+    - libtinfo6:amd64
+    - locales
+    - libsdl2-2.0-0
+    - libsdl2-ttf-2.0-0
+    - libglx-dev:amd64
+  files:
+    include:
+    - ./PixelOperator-Bold.ttf
+    - /lib/x86_64-linux-gnu/libFLAC.so.8
+    - /lib/x86_64-linux-gnu/libLLVM-13.so.1
+    - /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+    - /lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0
+    - /lib/x86_64-linux-gnu/libX11.so.6
+    - /lib/x86_64-linux-gnu/libXau.so.6
+    - /lib/x86_64-linux-gnu/libXcursor.so.1
+    - /lib/x86_64-linux-gnu/libXdmcp.so.6
+    - /lib/x86_64-linux-gnu/libXext.so.6
+    - /lib/x86_64-linux-gnu/libXfixes.so.3
+    - /lib/x86_64-linux-gnu/libXi.so.6
+    - /lib/x86_64-linux-gnu/libXinerama.so.1
+    - /lib/x86_64-linux-gnu/libXrandr.so.2
+    - /lib/x86_64-linux-gnu/libXrender.so.1
+    - /lib/x86_64-linux-gnu/libXss.so.1
+    - /lib/x86_64-linux-gnu/libXxf86vm.so.1
+    - /lib/x86_64-linux-gnu/libapparmor.so.1
+    - /lib/x86_64-linux-gnu/libasound.so.2
+    - /lib/x86_64-linux-gnu/libasyncns.so.0
+    - /lib/x86_64-linux-gnu/libbrotlicommon.so.1
+    - /lib/x86_64-linux-gnu/libbrotlidec.so.1
+    - /lib/x86_64-linux-gnu/libbsd.so.0
+    - /lib/x86_64-linux-gnu/libdecor-0.so.0
+    - /lib/x86_64-linux-gnu/libedit.so.2
+    - /lib/x86_64-linux-gnu/libelf.so.1
+    - /lib/x86_64-linux-gnu/libffi.so.8
+    - /lib/x86_64-linux-gnu/libfreetype.so.6
+    - /lib/x86_64-linux-gnu/libgbm.so.1
+    - /lib/x86_64-linux-gnu/libgcrypt.so.20
+    - /lib/x86_64-linux-gnu/libglapi.so.0
+    - /lib/x86_64-linux-gnu/libglib-2.0.so.0
+    - /lib/x86_64-linux-gnu/libgraphite2.so.3
+    - /lib/x86_64-linux-gnu/libharfbuzz.so.0
+    - /lib/x86_64-linux-gnu/libicudata.so.70
+    - /lib/x86_64-linux-gnu/libicuuc.so.70
+    - /lib/x86_64-linux-gnu/liblz4.so.1
+    - /lib/x86_64-linux-gnu/libmd.so.0
+    - /lib/x86_64-linux-gnu/libogg.so.0
+    - /lib/x86_64-linux-gnu/libopus.so.0
+    - /lib/x86_64-linux-gnu/libpng16.so.16
+    - /lib/x86_64-linux-gnu/libpulse.so.0
+    - /lib/x86_64-linux-gnu/libsensors.so.5
+    - /lib/x86_64-linux-gnu/libsndfile.so.1
+    - /lib/x86_64-linux-gnu/libstdc++.so.6
+    - /lib/x86_64-linux-gnu/libsystemd.so.0
+    - /lib/x86_64-linux-gnu/libvorbis.so.0
+    - /lib/x86_64-linux-gnu/libvorbisenc.so.2
+    - /lib/x86_64-linux-gnu/libxcb-dri2.so.0
+    - /lib/x86_64-linux-gnu/libxcb-dri3.so.0
+    - /lib/x86_64-linux-gnu/libxcb-present.so.0
+    - /lib/x86_64-linux-gnu/libxcb-sync.so.1
+    - /lib/x86_64-linux-gnu/libxkbcommon.so.0
+    - /lib/x86_64-linux-gnu/libxml2.so.2
+    - /lib/x86_64-linux-gnu/libxshmfence.so.1
+    - /lib/x86_64-linux-gnu/libzstd.so.1
+    - /usr/lib/locale/locale-archive
+    exclude:
+    - usr/share/man
+    - usr/share/doc/*/README.*
+    - usr/share/doc/*/changelog.*
+    - usr/share/doc/*/NEWS.*
+    - usr/share/doc/*/TODO.*
+  test:
+    fedora-30:
+      image: appimagecrafters/tests-env:fedora-30
+      command: ./AppRun
+    debian-stable:
+      image: appimagecrafters/tests-env:debian-stable
+      command: ./AppRun
+    archlinux-latest:
+      image: appimagecrafters/tests-env:archlinux-latest
+      command: ./AppRun
+    centos-7:
+      image: appimagecrafters/tests-env:centos-7
+      command: ./AppRun
+    ubuntu-xenial:
+      image: appimagecrafters/tests-env:ubuntu-xenial
+      command: ./AppRun
+AppImage:
+  arch: x86_64
+  update-information: guess

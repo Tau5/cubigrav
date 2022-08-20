@@ -8,3 +8,6 @@ windows
 cubigrav.kdev4
 SDL2_ttf*
 SDL2*
+*.AppImage 
+AppDir 
+appimage-build
