@@ -190,6 +190,9 @@ void adjust_difficulty() {
   if (madness <= 8)
   {
     cubis_color = madness_colors[madness - 1];
+    for (Cuby& cubi : cubis){
+      cubi.set_color(cubis_color.r, cubis_color.g, cubis_color.b, cubis_color.a);
+    }
   }
   cubi_update_timeout = 1;
 }
