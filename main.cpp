@@ -424,5 +424,3 @@ int main(int argc, char *args[])
   close();
   return 0;
 }
-
-/* Everything is a smoke machine if you operate ir wrong enough */
