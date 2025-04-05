@@ -88,7 +88,6 @@ void update_rects()
 SDL_Color timer_color = {0xB8, 0x9A, 0xFE}; // B89AFE
 bool newhs = false;
 int current_cubi = 0;
-bool loadMedia();
 void close();
 void render();
 void restart();
@@ -124,30 +123,19 @@ int init()
     }
   }
 
-  //  Initialize Game Mechanics
-  update_rects();
-    if (loadMedia()) 
-    {
-      if (SDL_GetDesktopDisplayMode(0, &dm) != 0) 
-      {
-        SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
-        return -3;
-      }
-    } else
-        return -4;
-    
+  	//  Initialize Game Mechanics
+  	update_rects();
+  	if (SDL_GetDesktopDisplayMode(0, &dm) != 0) 
+  	{
+  		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+    	return -3;
+	}
 
     GLOBAL_SCREEN_WIDTH = dm.w;
     GLOBAL_SCREEN_HEIGHT = dm.h;
 
 
   return 0;
-}
-
-bool loadMedia()
-{
-  bool success = true;
-  return success;
 }
 
 void update_screen_size()
